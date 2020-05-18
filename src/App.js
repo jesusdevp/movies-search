@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import Search from "./Components/Search";
+import Results from "./Components/Results";
 import axios from "axios";
 
 function App() {
-  const [state, setstate] = useState({
+  const [state, setState] = useState({
     s: "",
     results: [],
     selected: {},
@@ -13,8 +14,12 @@ function App() {
 
   const search = (e) => {
     if (e.key === "Enter") {
-      axios(apiurl + "&s=" + state.s).then((data) => {
-        console.log(data);
+      axios(apiurl + "&s=" + state.s).then(({ data }) => {
+        let results = data.Search;
+
+        setState((prevState) => {
+          return { ...prevState, results: results };
+        });
       });
     }
   };
@@ -22,7 +27,7 @@ function App() {
   const handleInput = (e) => {
     let s = e.target.value;
 
-    setstate((prevState) => {
+    setState((prevState) => {
       return { ...prevState, s: s };
     });
   };
@@ -34,6 +39,7 @@ function App() {
       </header>
       <main>
         <Search handleInput={handleInput} search={search} />
+        <Results results={state.results} />
       </main>
     </div>
   );
